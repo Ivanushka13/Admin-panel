@@ -1,8 +1,4 @@
-import "./ProductsList.scss"
-import {Link} from "react-router-dom";
-import List from "../../Components/List/List";
-
-const columns = [
+export const productsColumns = [
     {field: 'id', headerName: 'Id', width: 100},
     {field: 'name', headerName: 'Name', width: 150},
     {field: 'categoryId', headerName: 'Category id', width: 100},
@@ -12,10 +8,7 @@ const columns = [
     {field: 'image', headerName: "Image", width: 150},
 ];
 
-const url = "https://localhost:7153/Products"
-
-
-const actionColumn = [
+export const productsActionColumn = [
     {
         field: 'action',
         headerName: 'Action',
@@ -37,15 +30,3 @@ const actionColumn = [
         }
     }
 ]
-
-export const ProductsList = () => {
-    return (
-        <List
-            title="Products"
-            columns={columns}
-            url={url}
-            actionColumn={actionColumn}
-            addNewLink="/products/new"
-        />
-    )
-}

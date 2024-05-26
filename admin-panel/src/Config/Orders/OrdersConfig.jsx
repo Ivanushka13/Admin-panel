@@ -1,9 +1,4 @@
-import "./OrdersList.scss"
-import "../../Components/SideBar/SideBar.scss"
-import {Link} from "react-router-dom";
-import List from "../../Components/List/List";
-
-const columns = [
+export const ordersColumns = [
     {field: 'id', headerName: 'Id', width: 100},
     {field: 'dateAndTime', headerName: 'Date and time', width: 250},
     {field: 'clientId', headerName: 'Client id', width: 100},
@@ -12,9 +7,8 @@ const columns = [
     {field: 'status', headerName: 'Status', width: 200},
 ];
 
-const url = "https://localhost:7153/Orders"
 
-const actionColumn = [
+export const ordersActionColumn = [
     {
         field: 'action',
         headerName: 'Action',
@@ -36,15 +30,3 @@ const actionColumn = [
         }
     }
 ]
-
-export const OrdersList = () => {
-    return (
-        <List
-            title="Orders"
-            columns={columns}
-            url={url}
-            actionColumn={actionColumn}
-            addNewLink="/orders/new"
-        />
-    )
-}
