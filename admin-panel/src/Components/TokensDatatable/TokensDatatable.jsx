@@ -1,8 +1,8 @@
 import "./TokensDatatable.scss"
 import {DataGrid} from '@mui/x-data-grid';
-import React, {useEffect, useState} from "react";
-import Axios from "axios";
+import React, {useState} from "react";
 import ConfirmModal from "../Modal/ConfirmModal/ConfirmModal";
+import ApiFetcher from "../APIFetcher/APIFetcher";
 
 const columns = [
     {field: 'email', headerName: 'User email', width: 200},
@@ -10,24 +10,13 @@ const columns = [
 ];
 
 export function TokensDatatable() {
-    const [url, setUrl] = useState("");
+    const [url, setUrl] = useState("https://localhost:7153/Tokens");
 
     const [tokens, setTokens] = useState([]);
 
     const [loaded, setLoaded] = useState(false);
 
     const [showModal, setShowModal] = useState(false);
-
-    useEffect(() => {
-        if (loaded)
-            return;
-        Axios.get("https://localhost:7153/Tokens")
-            .then(
-                (res) => {
-                    setTokens(res?.data);
-                });
-        setLoaded(true);
-    })
 
     const actionColumn = [
         {
@@ -50,6 +39,14 @@ export function TokensDatatable() {
     ]
     return (
         <div className="data">
+            <ApiFetcher
+                url="https://localhost:7153/Tokens"
+                onDataLoad={(data) => {
+                    setTokens(data);
+                    setLoaded(true);
+                }}
+                loaded={loaded}
+            />
             <div className="datatable">
                 <DataGrid
                     getRowId={(row) => row.email}

@@ -1,9 +1,9 @@
 import "./OrdersDatatable.scss"
 import {DataGrid} from '@mui/x-data-grid';
-import React, {useEffect, useState} from "react";
-import Axios from "axios";
+import React, {useState} from "react";
 import ConfirmModal from "../Modal/ConfirmModal/ConfirmModal";
 import {Link} from "react-router-dom";
+import ApiFetcher from "../APIFetcher/APIFetcher";
 
 const columns = [
     {field: 'id', headerName: 'Id', width: 100},
@@ -15,25 +15,13 @@ const columns = [
 ];
 
 export function OrdersDatatable() {
-    const [url, setUrl] = useState("");
+    const [url, setUrl] = useState("https://localhost:7153/Orders");
 
     const [orders, setOrders] = useState([]);
 
     const [loaded, setLoaded] = useState(false);
 
     const [showModal, setShowModal] = useState(false);
-
-
-    useEffect(() => {
-        if (loaded)
-            return;
-        Axios.get("https://localhost:7153/Orders")
-            .then(
-                (res) => {
-                    setOrders(res?.data);
-                });
-        setLoaded(true);
-    })
 
     const actionColumn = [
         {
@@ -61,6 +49,14 @@ export function OrdersDatatable() {
     ]
     return (
         <div className="data">
+            <ApiFetcher
+                url="https://localhost:7153/Orders"
+                onDataLoad={(data) => {
+                    setOrders(data);
+                    setLoaded(true);
+                }}
+                loaded={loaded}
+            />
             <div className="datatable">
                 <DataGrid
                     rows={orders}

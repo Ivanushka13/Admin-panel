@@ -1,9 +1,9 @@
 import "./UsersDatatable.scss"
 import {DataGrid} from '@mui/x-data-grid';
-import React, {useEffect, useState} from "react";
-import Axios from "axios";
+import React, {useState} from "react";
 import {Link} from "react-router-dom";
 import ConfirmModal from "../Modal/ConfirmModal/ConfirmModal";
+import ApiFetcher from "../APIFetcher/APIFetcher";
 
 const columns = [
     {field: 'id', headerName: 'Id', width: 100},
@@ -17,25 +17,13 @@ const columns = [
 
 export function UsersDatatable() {
 
-    const [url, setUrl] = useState("");
+    const [url, setUrl] = useState("https://localhost:7153/Users");
 
     const [users, setUsers] = useState([]);
 
     const [loaded, setLoaded] = useState(false);
 
     const [showModal, setShowModal] = useState(false);
-
-    useEffect(() => {
-        if (loaded) {
-            return;
-        }
-        Axios.get("https://localhost:7153/Users")
-            .then(
-                (res) => {
-                    setUsers(res?.data)
-                });
-        setLoaded(true);
-    })
 
     const actionColumn = [
         {
@@ -63,6 +51,14 @@ export function UsersDatatable() {
     ]
     return (
         <div className="data">
+            <ApiFetcher
+                url="https://localhost:7153/Users"
+                onDataLoad={(data) => {
+                    setUsers(data);
+                    setLoaded(true);
+                }}
+                loaded={loaded}
+            />
             <div className="datatable">
                 <DataGrid
                     rows={users}
