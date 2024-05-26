@@ -1,8 +1,5 @@
 import "./TokensList.scss"
-import SideBar from "../../Components/SideBar/SideBar";
-import NavBar from "../../Components/NavBar/NavBar";
-import {Link} from "react-router-dom";
-import Datatable from "../../Components/Datatable/Datatable";
+import List from "../../Components/List/List";
 
 const columns = [
     {field: 'email', headerName: 'User email', width: 200},
@@ -31,24 +28,12 @@ const actionColumn = [
 
 export const TokensList = () => {
     return (
-        <div className="list">
-            <SideBar/>
-            <div className="listContainer">
-                <NavBar/>
-                <div className="datatable">
-                    <div className="listTitle">
-                        <h1>Tokens</h1>
-                    </div>
-                    <Datatable
-                        columns={columns}
-                        url={url}
-                        actionColumn={actionColumn}
-                    />
-                    <Link to="/tokens/new">
-                        <button className="mainButton">Add new token</button>
-                    </Link>
-                </div>
-            </div>
-        </div>
+        <List
+            title="Tokens"
+            columns={columns}
+            url={url}
+            actionColumn={actionColumn}
+            addNewLink="/tokens/new"
+        />
     )
 }
