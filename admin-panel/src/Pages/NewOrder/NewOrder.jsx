@@ -3,9 +3,7 @@ import SideBar from "../../Components/SideBar/SideBar";
 import NavBar from "../../Components/NavBar/NavBar";
 import {Link} from 'react-router-dom';
 import {useState} from "react";
-import axios from "axios";
-import ConfirmModal from "../../Components/Modal/ConfirmModal/ConfirmModal"
-import InfoModal from "../../Components/Modal/InfoModal/InfoModal";
+import APIFetcher from "../../Components/APIFetcher/APIFetcher";
 
 const NewOrder = () => {
     const [id, setId] = useState('');
@@ -30,18 +28,19 @@ const NewOrder = () => {
             "price": price,
             "status": status,
         };
-        axios({
-            method: 'post',
+        APIFetcher({
             url: "https://localhost:7153/Orders",
-            headers: {},
-            data: data
-        }).then(() => {
-            setMessage("Order created successfully.")
-            setFailModal(true);
-        }).catch((error) => {
-            console.log(error);
-            setMessage(error.response.data)
-            setFailModal(true);
+            method: 'POST',
+            data,
+            onSuccess: () => {
+                setMessage("Order created successfully.");
+                setShowModal(true);
+            },
+            onError: (error) => {
+                console.error(error);
+                setMessage("Can't create order, please, check if data is correct.");
+                setShowModal(true);
+            }
         });
     }
 

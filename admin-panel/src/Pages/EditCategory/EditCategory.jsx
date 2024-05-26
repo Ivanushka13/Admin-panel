@@ -3,8 +3,8 @@ import SideBar from "../../Components/SideBar/SideBar";
 import NavBar from "../../Components/NavBar/NavBar";
 import {Link, useParams} from 'react-router-dom';
 import {useEffect, useState} from "react";
-import axios from "axios";
 import InfoModal from "../../Components/Modal/InfoModal/InfoModal";
+import APIFetcher from "../../Components/APIFetcher/APIFetcher";
 
 
 const EditCategory = () => {
@@ -26,27 +26,37 @@ const EditCategory = () => {
         setCategory({...category, [e.target.name]: e.target.value});
     }
 
+    const handleSuccess = (data) => {
+        setCategory(data);
+    };
+
+    const handleError = (error) => {
+        console.error(error);
+        setMessage("Something went wrong, please check if data is correct.");
+        setInfoModal(true);
+    };
+
     const onSubmit = async () => {
-        await axios.put(`https://localhost:7153/Categories?id=${params.categoryId}`, category)
-            .then(() => {
-                setMessage("Category updated successfully.")
+        APIFetcher({
+            url: `https://localhost:7153/Categories?id=${params.categoryId}`,
+            method: 'PUT',
+            data: category,
+            onSuccess: () => {
+                setMessage("Category updated successfully.");
                 setInfoModal(true);
-            })
-            .catch((e) => {
-                console.log(e);
-                setMessage("Something went wrong, please, check if data is correct.")
-                setInfoModal(true);
-            });
+            },
+            onError: handleError
+        });
     }
 
     useEffect(() => {
-        loadCategory();
-    }, []);
-
-    const loadCategory = async () => {
-        const result = await axios.get(`https://localhost:7153/Categories/byId?id=${params.categoryId}`);
-        setCategory(result.data);
-    };
+        APIFetcher({
+            url: `https://localhost:7153/Categories/byId?id=${params.categoryId}`,
+            method: 'GET',
+            onSuccess: handleSuccess,
+            onError: handleError
+        });
+    }, [params.categoryId]);
 
     return (
         <div className="data">

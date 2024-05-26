@@ -3,8 +3,8 @@ import SideBar from "../../Components/SideBar/SideBar";
 import NavBar from "../../Components/NavBar/NavBar";
 import {Link, useParams} from 'react-router-dom';
 import {useEffect, useState} from "react";
-import axios from "axios";
 import InfoModal from "../../Components/Modal/InfoModal/InfoModal";
+import APIFetcher from "../../Components/APIFetcher/APIFetcher";
 
 
 const EditOrder = () => {
@@ -28,27 +28,37 @@ const EditOrder = () => {
         setOrder({...order, [e.target.name]: e.target.value});
     }
 
+    const handleSuccess = (data) => {
+        setOrder(data);
+    };
+
+    const handleError = (error) => {
+        console.error(error);
+        setMessage("Something went wrong, please check if data is correct.");
+        setInfoModal(true);
+    };
+
     const onSubmit = async () => {
-        await axios.put(`https://localhost:7153/Orders?id=${params.orderId}`, order)
-            .then(() => {
-                setMessage("Order updated successfully.")
+        APIFetcher({
+            url: `https://localhost:7153/Orders?id=${params.orderId}`,
+            method: 'PUT',
+            data: order,
+            onSuccess: () => {
+                setMessage("Order updated successfully.");
                 setInfoModal(true);
-            })
-            .catch((e) => {
-                console.log(e);
-                setMessage("Something went wrong, please, check if data is correct.")
-                setInfoModal(true);
-            });
+            },
+            onError: handleError
+        });
     }
 
     useEffect(() => {
-        loadOrder();
-    }, []);
-
-    const loadOrder = async () => {
-        const result = await axios.get(`https://localhost:7153/Orders/byId?id=${params.orderId}`);
-        setOrder(result.data);
-    };
+        APIFetcher({
+            url: `https://localhost:7153/Orders/byId?id=${params.orderId}`,
+            method: 'GET',
+            onSuccess: handleSuccess,
+            onError: handleError
+        });
+    }, [params.orderId]);
 
     return (
         <div className="data">

@@ -3,9 +3,8 @@ import SideBar from "../../Components/SideBar/SideBar";
 import NavBar from "../../Components/NavBar/NavBar";
 import {Link} from 'react-router-dom';
 import {useState} from "react";
-import axios from "axios";
-import ConfirmModal from "../../Components/Modal/ConfirmModal/ConfirmModal"
 import InfoModal from "../../Components/Modal/InfoModal/InfoModal";
+import APIFetcher from "../../Components/APIFetcher/APIFetcher";
 
 const NewCategory = () => {
     const [id, setId] = useState('');
@@ -22,18 +21,19 @@ const NewCategory = () => {
             "name": name,
             "image": image,
         };
-        axios({
-            method: 'post',
+        APIFetcher({
             url: "https://localhost:7153/Categories",
-            headers: {},
-            data: data
-        }).then(() => {
-            setMessage("Category created successfully.")
-            setFailModal(true);
-        }).catch((error) => {
-            console.log(error);
-            setMessage("Can't create category, please, check if data is correct.");
-            setFailModal(true);
+            method: 'POST',
+            data,
+            onSuccess: () => {
+                setMessage("Category created successfully.");
+                setShowModal(true);
+            },
+            onError: (error) => {
+                console.error(error);
+                setMessage("Can't create category, please, check if data is correct.");
+                setShowModal(true);
+            }
         });
     }
 

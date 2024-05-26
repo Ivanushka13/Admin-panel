@@ -3,9 +3,8 @@ import SideBar from "../../Components/SideBar/SideBar";
 import NavBar from "../../Components/NavBar/NavBar";
 import {Link} from 'react-router-dom';
 import {useState} from "react";
-import axios from "axios";
-import ConfirmModal from "../../Components/Modal/ConfirmModal/ConfirmModal"
 import InfoModal from "../../Components/Modal/InfoModal/InfoModal";
+import APIFetcher from "../../Components/APIFetcher/APIFetcher";
 
 const NewUser = () => {
     const [role, setRole] = useState('');
@@ -28,18 +27,19 @@ const NewUser = () => {
             "password": password,
             "role": role,
         };
-        axios({
-            method: 'post',
+        APIFetcher({
             url: "https://localhost:7153/Users",
-            headers: {},
-            data: data
-        }).then(() => {
-            setMessage("User created successfully.")
-            setFailModal(true);
-        }).catch((error) => {
-            setMessage("Can't create user, please, check if data is correct.");
-            console.log(error);
-            setFailModal(true);
+            method: 'POST',
+            data,
+            onSuccess: () => {
+                setMessage("User created successfully.");
+                setShowModal(true);
+            },
+            onError: (error) => {
+                console.error(error);
+                setMessage("Can't create user, please, check if data is correct.");
+                setShowModal(true);
+            }
         });
     }
 

@@ -1,19 +1,45 @@
-import React, { useState, useEffect } from "react";
-import Axios from "axios";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
-const ApiFetcher = ({ url, onDataLoad, loaded }) => {
+const APIFetcher = ({ url, method, data, onSuccess, onError }) => {
+    const [response, setResponse] = useState(null);
+    const [error, setError] = useState(null);
+    const [loaded, setLoaded] = useState(false);
+
     useEffect(() => {
-        if (loaded) return;
-        Axios.get(url)
-            .then(res => {
-                onDataLoad(res.data);
-            })
-            .catch(err => {
-                console.error("Error fetching data: ", err);
-            });
-    }, [url, onDataLoad, loaded]);
+        const fetchData = async () => {
+            try {
+                let result;
+                switch (method) {
+                    case 'GET':
+                        result = await axios.get(url);
+                        break;
+                    case 'POST':
+                        result = await axios.post(url, data);
+                        break;
+                    case 'PUT':
+                        result = await axios.put(url, data);
+                        break;
+                    case 'DELETE':
+                        result = await axios.delete(url);
+                        break;
+                    default:
+                        throw new Error(`Unsupported method: ${method}`);
+                }
+                setResponse(result.data);
+                onSuccess && onSuccess(result.data);
+            } catch (err) {
+                setError(err);
+                onError && onError(err);
+            } finally {
+                setLoaded(true);
+            }
+        };
 
-    return null;
+        fetchData();
+    }, [url, method, data, onSuccess, onError]);
+
+    return { response, error, loaded };
 };
 
-export default ApiFetcher;
+export default APIFetcher;

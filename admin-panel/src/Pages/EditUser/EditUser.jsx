@@ -5,6 +5,7 @@ import {Link, useParams} from 'react-router-dom';
 import {useEffect, useState} from "react";
 import axios from "axios";
 import InfoModal from "../../Components/Modal/InfoModal/InfoModal";
+import APIFetcher from "../../Components/APIFetcher/APIFetcher";
 
 
 const EditUser = () => {
@@ -30,27 +31,37 @@ const EditUser = () => {
         setUser({...user, [e.target.name]: e.target.value});
     }
 
+    const handleSuccess = (data) => {
+        setUser(data);
+    };
+
+    const handleError = (error) => {
+        console.error(error);
+        setMessage("Something went wrong, please check if data is correct.");
+        setInfoModal(true);
+    };
+
     const onSubmit = async () => {
-        await axios.put(`https://localhost:7153/Users?id=${params.userId}`, user)
-            .then(() => {
-                setMessage("User updated successfully.")
+        APIFetcher({
+            url: `https://localhost:7153/Users?id=${params.userId}`,
+            method: 'PUT',
+            data: user,
+            onSuccess: () => {
+                setMessage("User updated successfully.");
                 setInfoModal(true);
-            })
-            .catch((e) => {
-                console.log(e);
-                setMessage("Something went wrong, please, check if data is correct.")
-                setInfoModal(true);
-            });
+            },
+            onError: handleError
+        });
     }
 
     useEffect(() => {
-        loadUser();
-    }, []);
-
-    const loadUser = async () => {
-        const result = await axios.get(`https://localhost:7153/Users/byId?id=${params.userId}`);
-        setUser(result.data);
-    };
+        APIFetcher({
+            url: `https://localhost:7153/Users/byId?id=${params.userId}`,
+            method: 'GET',
+            onSuccess: handleSuccess,
+            onError: handleError
+        });
+    }, [params.userId]);
 
     return (
         <div className="data">

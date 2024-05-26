@@ -3,8 +3,8 @@ import SideBar from "../../Components/SideBar/SideBar";
 import NavBar from "../../Components/NavBar/NavBar";
 import {Link} from 'react-router-dom';
 import {useState} from "react";
-import axios from "axios";
 import InfoModal from "../../Components/Modal/InfoModal/InfoModal";
+import APIFetcher from "../../Components/APIFetcher/APIFetcher";
 
 const NewProduct = () => {
     const [id, setId] = useState('');
@@ -29,18 +29,19 @@ const NewProduct = () => {
             "description": description,
             "image": image,
         };
-        axios({
-            method: 'post',
-            url: "https://localhost:7153/Items",
-            headers: {},
-            data: data
-        }).then(() => {
-            setMessage("Product created successfully.")
-            setFailModal(true);
-        }).catch((error) => {
-            console.log(error);
-            setMessage("Can't create product, please, check if data is correct.");
-            setFailModal(true);
+        APIFetcher({
+            url: "https://localhost:7153/Products",
+            method: 'POST',
+            data,
+            onSuccess: () => {
+                setMessage("Product created successfully.");
+                setShowModal(true);
+            },
+            onError: (error) => {
+                console.error(error);
+                setMessage("Can't create product, please, check if data is correct.");
+                setShowModal(true);
+            }
         });
     }
 
