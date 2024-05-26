@@ -14,7 +14,7 @@ import EditOrder from "./Pages/EditOrder/EditOrder";
 import EditProduct from "./Pages/EditProduct/EditProduct";
 import EditCategory from "./Pages/EditCategory/EditCategory";
 import SingleProduct from "./Pages/SingleProduct/SingleProduct";
-import ListPage from "./Components/ListPage/ListPage";
+import List from "./Components/List/List";
 
 import { usersColumns, usersActionColumn } from "./Config/Users/UsersConfig";
 import { categoriesColumns, categoriesActionColumn } from "./Config/Categories/CategoriesConfig";
@@ -38,7 +38,7 @@ function App() {
                     <Route path="/login" element={<LoginPage />} />
                     <Route path="/" element={<LoginPage />} />
                     <Route path="/orders" element={
-                        <ListPage
+                        <List
                             title="Orders"
                             columns={ordersColumns}
                             url={ordersUrl}
@@ -50,7 +50,7 @@ function App() {
                     <Route path="/orders/new" element={<NewOrder />} />
                     <Route path="/orders/view/:orderId" element={<SingleOrder />} />
                     <Route path="/users" element={
-                        <ListPage
+                        <List
                             title="Users"
                             columns={usersColumns}
                             url={usersUrl}
@@ -62,7 +62,7 @@ function App() {
                     <Route path="/users/edit/:userId" element={<EditUser />} />
                     <Route path="/users/new" element={<NewUser />} />
                     <Route path="/products" element={
-                        <ListPage
+                        <List
                             title="Products"
                             columns={productsColumns}
                             url={productsUrl}
@@ -74,7 +74,7 @@ function App() {
                     <Route path="/products/view/:productId" element={<SingleProduct />} />
                     <Route path="/products/edit/:productId" element={<EditProduct />} />
                     <Route path="/categories" element={
-                        <ListPage
+                        <List
                             title="Categories"
                             columns={categoriesColumns}
                             url={categoriesUrl}
@@ -85,7 +85,7 @@ function App() {
                     <Route path="/categories/new" element={<NewCategory />} />
                     <Route path="/categories/edit/:categoryId" element={<EditCategory />} />
                     <Route path="/tokens" element={
-                        <ListPage
+                        <List
                             title="Tokens"
                             columns={tokensColumns}
                             url={tokensUrl}
